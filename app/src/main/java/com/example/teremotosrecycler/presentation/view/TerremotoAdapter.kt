@@ -36,6 +36,7 @@ class TerremotoAdapter : RecyclerView.Adapter<TerremotoAdapter.TerremotoViewHold
     }
     inner class TerremotoViewHolder(private var binding: EqItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(terremoto: Terremoto){
+            binding.magnitudTxt.text = String.format("%.2f", terremoto.magnitud)
             binding.magnitudTxt.text = terremoto.magnitud.toString()
             binding.lugarTxt.text = terremoto.lugar
         }

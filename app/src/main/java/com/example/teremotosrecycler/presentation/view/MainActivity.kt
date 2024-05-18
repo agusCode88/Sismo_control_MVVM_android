@@ -6,8 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.teremotosrecycler.data.repository.MainRepository
 import com.example.teremotosrecycler.databinding.ActivityMainBinding
+import com.example.teremotosrecycler.domain.TerremotosUseCase
 import com.example.teremotosrecycler.presentation.viewmodel.MainViewModel
+import com.example.teremotosrecycler.presentation.viewmodel.MainViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,7 +22,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val viewModel: MainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        // Create an instance of the repository and use case
+        val repository = MainRepository()
+        val getTerremotosUseCase = TerremotosUseCase(repository)
+
+        // Pass the use case to the ViewModelFactory
+        val viewModelFactory = MainViewModelFactory(getTerremotosUseCase)
+
+        val viewModel: MainViewModel = ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
 
         val adaptador = TerremotoAdapter()
         binding.rclview.adapter = adaptador

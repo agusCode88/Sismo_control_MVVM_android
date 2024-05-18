@@ -1,5 +1,6 @@
 [versions]
 agp = "8.3.1"
+androidxRoomCompiler = "2.5.0"
 converterMoshi = "2.9.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
@@ -13,11 +14,19 @@ activity = "1.8.0"
 constraintlayout = "2.1.4"
 moshi = "1.15.1"
 retrofit = "2.11.0"
+roomCompiler = "2.2.5"
+roomCompilerVersion = "2.5.2"
+roomRuntime = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+androidx-room-compiler-v225 = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
+androidx-room-compiler-v250 = { module = "androidx.room:room-compiler", version.ref = "androidxRoomCompiler" }
+androidx-room-compiler-v252 = { module = "androidx.room:room-compiler", version.ref = "roomCompilerVersion" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshi" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -33,7 +34,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    
+
     viewBinding {
         enable = true
     }
@@ -51,6 +52,10 @@ dependencies {
     implementation(libs.moshi)
     //Moshi Converter
     implementation (libs.converter.moshi)
+
+    implementation (libs.androidx.room.runtime)
+
+    ksp(libs.androidx.room.compiler.v250)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

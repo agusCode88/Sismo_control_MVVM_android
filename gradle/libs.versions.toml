@@ -26,6 +26,7 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-compiler-v225 = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
 androidx-room-compiler-v250 = { module = "androidx.room:room-compiler", version.ref = "androidxRoomCompiler" }
 androidx-room-compiler-v252 = { module = "androidx.room:room-compiler", version.ref = "roomCompilerVersion" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshi" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

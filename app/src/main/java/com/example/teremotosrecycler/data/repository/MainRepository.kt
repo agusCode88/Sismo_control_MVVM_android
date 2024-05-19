@@ -1,5 +1,7 @@
 package com.example.teremotosrecycler.data.repository
 
+import androidx.lifecycle.LiveData
+import com.example.teremotosrecycler.data.local.TerremotoDAO
 import com.example.teremotosrecycler.data.model.Terremoto
 import com.example.teremotosrecycler.data.model.response.Properties
 import com.example.teremotosrecycler.data.model.response.TerremotoResponse
@@ -7,7 +9,7 @@ import com.example.teremotosrecycler.data.network.TerremotoApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class MainRepository: TerremotoRepository {
+class MainRepository(private val terremotoDao: TerremotoDAO): TerremotoRepository {
 
     private var serviceApi = TerremotoApiService()
 
@@ -18,8 +20,20 @@ class MainRepository: TerremotoRepository {
             val terremotos: TerremotoResponse = serviceApi.getTerremotos()
             //Log.d("API",terremotosString)
             val terremotosList = parserTerremotosJson(terremotos)
+
+            saveTerremotosDB(terremotosList)
             //mutableListOf<Terremoto>()
             terremotosList
+        }
+    }
+
+    override suspend fun getTerremotosDB(): MutableList<Terremoto> {
+        return terremotoDao.getAlTerremotos()
+    }
+
+    override suspend fun saveTerremotosDB(terremotos: MutableList<Terremoto>) {
+        withContext(Dispatchers.IO) {
+            terremotoDao.insertAll(terremotos)
         }
     }
 

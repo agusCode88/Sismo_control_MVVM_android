@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.teremotosrecycler.data.local.TerremotoDatabase
 import com.example.teremotosrecycler.data.repository.MainRepository
 import com.example.teremotosrecycler.databinding.ActivityMainBinding
 import com.example.teremotosrecycler.domain.TerremotosUseCase
@@ -22,12 +23,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val database = TerremotoDatabase.getDatabase(application)
         // Create an instance of the repository and use case
-        val repository = MainRepository()
+        val repository = MainRepository(database.terremotoDao())
         val getTerremotosUseCase = TerremotosUseCase(repository)
 
         // Pass the use case to the ViewModelFactory
-        val viewModelFactory = MainViewModelFactory(getTerremotosUseCase)
+        val viewModelFactory = MainViewModelFactory(application, getTerremotosUseCase)
 
         val viewModel: MainViewModel = ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
 

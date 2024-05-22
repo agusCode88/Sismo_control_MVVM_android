@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.teremotosrecycler.data.local.TerremotoDatabase
+import com.example.teremotosrecycler.data.network.TerremotoApiResponseStatus
 import com.example.teremotosrecycler.data.repository.MainRepository
 import com.example.teremotosrecycler.databinding.ActivityMainBinding
 import com.example.teremotosrecycler.domain.TerremotosUseCase
@@ -33,6 +34,16 @@ class MainActivity : AppCompatActivity() {
 
         val viewModel: MainViewModel = ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
 
+        viewModel.statusLv.observe(this, Observer {
+
+            when(it){
+                TerremotoApiResponseStatus.DONE -> binding.loading.visibility = View.GONE
+                TerremotoApiResponseStatus.LOADING -> binding.loading.visibility = View.VISIBLE
+                TerremotoApiResponseStatus.NOT_INTERNET_CONNECTION_ERROR -> binding.loading.visibility = View.VISIBLE
+            }
+
+        })
+
         val adaptador = TerremotoAdapter()
         binding.rclview.adapter = adaptador
 
@@ -41,6 +52,7 @@ class MainActivity : AppCompatActivity() {
             adaptador.terremotos = it
             isDataAdapter(adaptador)
         })
+
 
     }
 

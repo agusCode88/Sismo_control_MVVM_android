@@ -1,11 +1,15 @@
 package com.example.teremotosrecycler.presentation.view
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.teremotosrecycler.R
 import com.example.teremotosrecycler.data.local.TerremotoDatabase
 import com.example.teremotosrecycler.data.network.TerremotoApiResponseStatus
 import com.example.teremotosrecycler.data.repository.MainRepository
@@ -17,12 +21,15 @@ import com.example.teremotosrecycler.presentation.viewmodel.MainViewModelFactory
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setSupportActionBar(binding.toolbar)
 
         val database = TerremotoDatabase.getDatabase(application)
         // Create an instance of the repository and use case
@@ -32,11 +39,11 @@ class MainActivity : AppCompatActivity() {
         // Pass the use case to the ViewModelFactory
         val viewModelFactory = MainViewModelFactory(application, getTerremotosUseCase)
 
-        val viewModel: MainViewModel = ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
+        viewModel = ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
 
         viewModel.statusLv.observe(this, Observer {
 
-            when(it){
+            when(it!!){
                 TerremotoApiResponseStatus.DONE -> binding.loading.visibility = View.GONE
                 TerremotoApiResponseStatus.LOADING -> binding.loading.visibility = View.VISIBLE
                 TerremotoApiResponseStatus.NOT_INTERNET_CONNECTION_ERROR -> binding.loading.visibility = View.VISIBLE
@@ -62,6 +69,27 @@ class MainActivity : AppCompatActivity() {
         } else {
             binding.txtEmpty.visibility = View.GONE
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val itemID = item.itemId
+        return when(itemID){
+            R.id.menu_sort_magnitude -> {
+                viewModel.setOrderListFilter(true)
+                true
+            }//Sort by magnitude
+            R.id.menu_sort_time -> {
+                viewModel.setOrderListFilter(false)
+                true
+            } // Sort by time
+            else -> super.onOptionsItemSelected(item)
+        }
+
     }
 
 }

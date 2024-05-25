@@ -26,33 +26,54 @@ class MainViewModel(
 
     private var _terremotoList= MutableLiveData<MutableList<Terremoto>>()
     private var _statusApi = MutableLiveData<TerremotoApiResponseStatus>()
+    private var _orderListFilter = MutableLiveData<Boolean>()
     val terremotoLV: LiveData<MutableList<Terremoto>>
         get() = _terremotoList
 
     val statusLv: LiveData<TerremotoApiResponseStatus>
         get() = _statusApi
 
+    val filterLv: LiveData<Boolean>
+        get() = _orderListFilter
+
 
     init{
-        viewModelScope.launch {
-
-           try {
-               _statusApi.value = TerremotoApiResponseStatus.LOADING
-               val terremotos = getTerremotosUseCase.gelAllEartquakes()
-               getTerremotosUseCase.saveTerremotos(terremotos)
-               // Load terremotos from database
-               _terremotoList.value = getTerremotosUseCase.getTerremotosFromDatabase()
-               _statusApi.value = TerremotoApiResponseStatus.DONE
-
-
-           }catch (e: UnknownHostException){
-                Log.e(TAG, "Not Network connection")
-               _terremotoList.value = getTerremotosUseCase.getTerremotosFromDatabase()
-               _statusApi.value = TerremotoApiResponseStatus.NOT_INTERNET_CONNECTION_ERROR
-           }
-
-        }
+        _orderListFilter.value = false
+        fetchTerremotos(false)
 
     }
+
+    private fun fetchTerremotos(orderByMagnitude: Boolean){
+        viewModelScope.launch {
+
+            try {
+                _statusApi.value = TerremotoApiResponseStatus.LOADING
+                val terremotos = getTerremotosUseCase.gelAllEartquakes(orderByMagnitude)
+                _statusApi.value = TerremotoApiResponseStatus.DONE
+                if(terremotos.isNotEmpty()){
+                    _terremotoList.value = terremotos
+                    saveAllTerremotos(terremotos)
+                }else{
+                    _terremotoList.value = getTerremotosUseCase.getTerremotosFromDatabase()
+                }
+                // Load terremotos from database
+            }catch (e: UnknownHostException){
+                Log.e(TAG, "Not Network connection")
+                _terremotoList.value = getTerremotosUseCase.getTerremotosFromDatabase()
+                _statusApi.value = TerremotoApiResponseStatus.NOT_INTERNET_CONNECTION_ERROR
+            }
+
+        }
+    }
+
+    suspend fun saveAllTerremotos(listTerremotosApi: MutableList<Terremoto>){
+        getTerremotosUseCase.saveTerremotos(listTerremotosApi)
+    }
+
+    fun setOrderListFilter(orderByMagnitude: Boolean) {
+        _orderListFilter.value = orderByMagnitude
+        fetchTerremotos(orderByMagnitude)
+    }
+
 
 }

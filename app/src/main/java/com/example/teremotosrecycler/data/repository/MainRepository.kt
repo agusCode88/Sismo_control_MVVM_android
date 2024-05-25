@@ -1,6 +1,5 @@
 package com.example.teremotosrecycler.data.repository
 
-import androidx.lifecycle.LiveData
 import com.example.teremotosrecycler.data.local.TerremotoDAO
 import com.example.teremotosrecycler.data.model.Terremoto
 import com.example.teremotosrecycler.data.model.response.Properties
@@ -14,18 +13,28 @@ class MainRepository(private val terremotoDao: TerremotoDAO): TerremotoRepositor
     private var serviceApi = TerremotoApiService()
 
     // Cuando tenemos una corrutina en un método , hay que utilizar el suspend
-    override suspend fun fetchTerremotos(): MutableList<Terremoto> {
+    override suspend fun fetchTerremotos(orderByMagnitude:Boolean): MutableList<Terremoto> {
 
         return withContext(Dispatchers.IO){
             val terremotos: TerremotoResponse = serviceApi.getTerremotos()
             //Log.d("API",terremotosString)
-            val terremotosList = parserTerremotosJson(terremotos)
-
-            saveTerremotosDB(terremotosList)
-            //mutableListOf<Terremoto>()
-            terremotosList
+            var terremotosList = parserTerremotosJson(terremotos)
+           // Guarda siempre en base de datos , luego trae de DB según el filtro
+            if(terremotosList.isNotEmpty()){
+                saveTerremotosDB(terremotosList)
+                if(orderByMagnitude)
+                    terremotosList = getOrderByMagnitudeDB()
+                else
+                    terremotosList= getTerremotosDB()
+            }
+            // Devuelve una lista vacía para validación
+            else {
+                terremotosList = mutableListOf()
+            }
+           terremotosList
         }
     }
+
 
     override suspend fun getTerremotosDB(): MutableList<Terremoto> {
         return terremotoDao.getAlTerremotos()
@@ -35,6 +44,10 @@ class MainRepository(private val terremotoDao: TerremotoDAO): TerremotoRepositor
         withContext(Dispatchers.IO) {
             terremotoDao.insertAll(terremotos)
         }
+    }
+
+    override suspend fun getOrderByMagnitudeDB(): MutableList<Terremoto> {
+           return terremotoDao.getTerremotoByMagnitude()
     }
 
     private fun parserTerremotosJson(terremotosJsonResponse: TerremotoResponse): MutableList<Terremoto>{

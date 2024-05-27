@@ -26,33 +26,65 @@ class MainViewModel(
 
     private var _terremotoList= MutableLiveData<MutableList<Terremoto>>()
     private var _statusApi = MutableLiveData<TerremotoApiResponseStatus>()
+    private var _orderListFilter = MutableLiveData<Boolean>()
+    private var _filterSaved = MutableLiveData<Boolean>()
+    private var sharedPreferences = application.getSharedPreferences("SismosPref",0)
     val terremotoLV: LiveData<MutableList<Terremoto>>
         get() = _terremotoList
 
     val statusLv: LiveData<TerremotoApiResponseStatus>
         get() = _statusApi
 
+    val filterLv: LiveData<Boolean>
+        get() = _orderListFilter
+
 
     init{
+        _orderListFilter.value = false
+        fetchTerremotos(false)
+
+    }
+
+    private fun fetchTerremotos(orderByMagnitude: Boolean){
         viewModelScope.launch {
 
-           try {
-               _statusApi.value = TerremotoApiResponseStatus.LOADING
-               val terremotos = getTerremotosUseCase.gelAllEartquakes()
-               getTerremotosUseCase.saveTerremotos(terremotos)
-               // Load terremotos from database
-               _terremotoList.value = getTerremotosUseCase.getTerremotosFromDatabase()
-               _statusApi.value = TerremotoApiResponseStatus.DONE
+            try {
+                _statusApi.value = TerremotoApiResponseStatus.LOADING
+                val terremotos = getTerremotosUseCase.gelAllEartquakes(orderByMagnitude)
+                _statusApi.value = TerremotoApiResponseStatus.DONE
 
+                if(terremotos.isNotEmpty()){
+                    _terremotoList.value = terremotos
+                    saveAllTerremotos(terremotos)
+                }else{
+                    _terremotoList.value = getTerremotosUseCase.getTerremotosFromDatabase()
+                }
 
-           }catch (e: UnknownHostException){
+            }catch (e: UnknownHostException){
                 Log.e(TAG, "Not Network connection")
-               _terremotoList.value = getTerremotosUseCase.getTerremotosFromDatabase()
-               _statusApi.value = TerremotoApiResponseStatus.NOT_INTERNET_CONNECTION_ERROR
-           }
+                _terremotoList.value = getTerremotosUseCase.getTerremotosFromDatabase()
+                _statusApi.value = TerremotoApiResponseStatus.NOT_INTERNET_CONNECTION_ERROR
+            }
 
         }
+    }
 
+    suspend fun saveAllTerremotos(listTerremotosApi: MutableList<Terremoto>){
+        getTerremotosUseCase.saveTerremotos(listTerremotosApi)
+    }
+
+    fun setOrderListFilter(orderByMagnitude: Boolean) {
+        _orderListFilter.value = orderByMagnitude
+        fetchTerremotos(orderByMagnitude)
+    }
+
+    fun setFilterSharedPreferences(orderByMagnitude: Boolean){
+            if(orderByMagnitude) sharedPreferences.edit().putBoolean("byMagnitudeFilter",true).apply()
+            else sharedPreferences.edit().putBoolean("byMagnitudeFilter",false).apply()
+    }
+
+    fun getFilterSP(): Boolean{
+        return sharedPreferences.getBoolean("byMagnitudeFilter",false)
     }
 
 }

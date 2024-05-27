@@ -6,9 +6,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class TerremotosUseCase(private val repository: TerremotoRepository) {
-    suspend fun gelAllEartquakes(): MutableList<Terremoto> {
-        return repository.fetchTerremotos()
+    suspend fun gelAllEartquakes(isOrderByMagnitude: Boolean): MutableList<Terremoto> {
+        return repository.fetchTerremotos(isOrderByMagnitude)
     }
+
 
     suspend fun getTerremotosFromDatabase(): MutableList<Terremoto>{
         return withContext(Dispatchers.IO){

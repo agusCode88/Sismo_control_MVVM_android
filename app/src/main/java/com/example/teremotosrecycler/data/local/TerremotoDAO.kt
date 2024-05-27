@@ -21,7 +21,10 @@ interface TerremotoDAO {
     @Update
     fun update(vararg  terremoto: Terremoto)
 
-    @Query("SELECT * FROM terremotos WHERE magnitud > :magnitude")
-    fun getTerremotoByMagnitude(magnitude: Double):MutableList<Terremoto>
+   /* @Query("SELECT * FROM terremotos WHERE magnitud > :magnitude")
+    fun getTerremotoByMagnitude(magnitude: Double):MutableList<Terremoto>*/
+
+    @Query("SELECT * FROM terremotos order by  magnitud asc")
+    fun getTerremotoByMagnitude():MutableList<Terremoto>
 
 }

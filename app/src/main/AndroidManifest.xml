@@ -15,7 +15,10 @@
         android:theme="@style/Theme.TeremotosRecycler"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.view.MainActivity"
+            android:name=".presentation.detail.view.DetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.home.view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

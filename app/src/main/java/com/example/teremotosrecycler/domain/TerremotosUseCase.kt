@@ -10,6 +10,9 @@ class TerremotosUseCase(private val repository: TerremotoRepository) {
         return repository.fetchTerremotos(isOrderByMagnitude)
     }
 
+    suspend fun getDetailTerremotoDB(idTerremoto: String): Terremoto?{
+        return repository.getTerremotoById(idTerremoto)
+    }
 
     suspend fun getTerremotosFromDatabase(): MutableList<Terremoto>{
         return withContext(Dispatchers.IO){

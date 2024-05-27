@@ -1,6 +1,7 @@
-package com.example.teremotosrecycler.presentation.view
+package com.example.teremotosrecycler.presentation.home.view
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,6 +9,8 @@ import com.example.teremotosrecycler.data.model.Terremoto
 import com.example.teremotosrecycler.databinding.EqItemBinding
 
 class TerremotoAdapter : RecyclerView.Adapter<TerremotoAdapter.TerremotoViewHolder>() {
+
+    lateinit var onItemClickListener: (Terremoto) -> Unit
 
     var terremotos = mutableListOf<Terremoto>()
         @SuppressLint("NotifyDataSetChanged")
@@ -39,7 +42,16 @@ class TerremotoAdapter : RecyclerView.Adapter<TerremotoAdapter.TerremotoViewHold
             binding.magnitudTxt.text = String.format("%.2f", terremoto.magnitud)
             binding.magnitudTxt.text = terremoto.magnitud.toString()
             binding.lugarTxt.text = terremoto.lugar
+
+            binding.root.setOnClickListener {
+                if(::onItemClickListener.isInitialized)
+                    onItemClickListener(terremoto)
+                else
+                    Log.e("Adapter", "Listener not initialized")
+            }
+
         }
+
     }
 
 }

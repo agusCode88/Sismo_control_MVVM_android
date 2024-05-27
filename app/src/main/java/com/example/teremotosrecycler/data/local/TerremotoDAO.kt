@@ -15,14 +15,9 @@ interface TerremotoDAO {
     suspend fun insertAll( terremotos: MutableList<Terremoto> )
     @Query("SELECT * FROM terremotos")
     suspend fun getAlTerremotos(): MutableList<Terremoto>
-    @Delete
-    fun delete(vararg  terremoto: Terremoto)
 
-    @Update
-    fun update(vararg  terremoto: Terremoto)
-
-   /* @Query("SELECT * FROM terremotos WHERE magnitud > :magnitude")
-    fun getTerremotoByMagnitude(magnitude: Double):MutableList<Terremoto>*/
+    @Query("SELECT * FROM terremotos WHERE id = :terremotoId")
+    fun getTerremotoById(terremotoId: String):Terremoto?
 
     @Query("SELECT * FROM terremotos order by  magnitud asc")
     fun getTerremotoByMagnitude():MutableList<Terremoto>

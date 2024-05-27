@@ -1,4 +1,4 @@
-package com.example.teremotosrecycler.presentation.viewmodel
+package com.example.teremotosrecycler.presentation.home.viewmodel
 
 import android.app.Application
 import android.util.Log
@@ -12,8 +12,6 @@ import com.example.teremotosrecycler.domain.TerremotosUseCase
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 
-
-private val TAG = MainViewModel::class.java.simpleName
 class MainViewModel(
     application: Application,
     private val getTerremotosUseCase: TerremotosUseCase
@@ -61,7 +59,7 @@ class MainViewModel(
                 }
 
             }catch (e: UnknownHostException){
-                Log.e(TAG, "Not Network connection")
+                Log.e("MainViewModel", "Not Network connection")
                 _terremotoList.value = getTerremotosUseCase.getTerremotosFromDatabase()
                 _statusApi.value = TerremotoApiResponseStatus.NOT_INTERNET_CONNECTION_ERROR
             }

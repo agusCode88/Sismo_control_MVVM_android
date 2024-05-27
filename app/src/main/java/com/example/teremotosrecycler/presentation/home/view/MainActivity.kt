@@ -1,11 +1,11 @@
-package com.example.teremotosrecycler.presentation.view
+package com.example.teremotosrecycler.presentation.home.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,8 +15,9 @@ import com.example.teremotosrecycler.data.network.TerremotoApiResponseStatus
 import com.example.teremotosrecycler.data.repository.MainRepository
 import com.example.teremotosrecycler.databinding.ActivityMainBinding
 import com.example.teremotosrecycler.domain.TerremotosUseCase
-import com.example.teremotosrecycler.presentation.viewmodel.MainViewModel
-import com.example.teremotosrecycler.presentation.viewmodel.MainViewModelFactory
+import com.example.teremotosrecycler.presentation.detail.view.DetailActivity
+import com.example.teremotosrecycler.presentation.home.viewmodel.MainViewModel
+import com.example.teremotosrecycler.presentation.home.viewmodel.MainViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
@@ -65,6 +66,9 @@ class MainActivity : AppCompatActivity() {
             binding.rclview.layoutManager = LinearLayoutManager(this)
             adaptador.terremotos = it
             isDataAdapter(adaptador)
+            adaptador.onItemClickListener = {
+                    initializedDetailActivity(it.id)
+            }
         })
 
 
@@ -76,6 +80,14 @@ class MainActivity : AppCompatActivity() {
         } else {
             binding.txtEmpty.visibility = View.GONE
         }
+    }
+
+    private fun initializedDetailActivity(idTerremoto: String){
+        var intentDetail = Intent(this, DetailActivity::class.java)
+        var bundle = Bundle()
+        bundle.putString("idTerremoto", idTerremoto)
+        intentDetail.putExtras(bundle)
+        startActivity(intentDetail)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

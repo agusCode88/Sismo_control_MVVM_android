@@ -37,12 +37,15 @@ class MainRepository(private val terremotoDao: TerremotoDAO): TerremotoRepositor
         return terremotoDao.getAlTerremotos()
     }
 
+    override suspend fun getTerremotoById(idTerremoto: String): Terremoto? {
+            return terremotoDao.getTerremotoById(idTerremoto)
+    }
+
     override suspend fun saveTerremotosDB(terremotos: MutableList<Terremoto>) {
         withContext(Dispatchers.IO) {
             terremotoDao.insertAll(terremotos)
         }
     }
-
     override suspend fun getOrderByMagnitudeDB(): MutableList<Terremoto> {
            return terremotoDao.getTerremotoByMagnitude()
     }

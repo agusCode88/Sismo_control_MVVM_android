@@ -27,6 +27,8 @@ class MainViewModel(
     private var _terremotoList= MutableLiveData<MutableList<Terremoto>>()
     private var _statusApi = MutableLiveData<TerremotoApiResponseStatus>()
     private var _orderListFilter = MutableLiveData<Boolean>()
+    private var _filterSaved = MutableLiveData<Boolean>()
+    private var sharedPreferences = application.getSharedPreferences("SismosPref",0)
     val terremotoLV: LiveData<MutableList<Terremoto>>
         get() = _terremotoList
 
@@ -50,13 +52,14 @@ class MainViewModel(
                 _statusApi.value = TerremotoApiResponseStatus.LOADING
                 val terremotos = getTerremotosUseCase.gelAllEartquakes(orderByMagnitude)
                 _statusApi.value = TerremotoApiResponseStatus.DONE
+
                 if(terremotos.isNotEmpty()){
                     _terremotoList.value = terremotos
                     saveAllTerremotos(terremotos)
                 }else{
                     _terremotoList.value = getTerremotosUseCase.getTerremotosFromDatabase()
                 }
-                // Load terremotos from database
+
             }catch (e: UnknownHostException){
                 Log.e(TAG, "Not Network connection")
                 _terremotoList.value = getTerremotosUseCase.getTerremotosFromDatabase()
@@ -75,5 +78,13 @@ class MainViewModel(
         fetchTerremotos(orderByMagnitude)
     }
 
+    fun setFilterSharedPreferences(orderByMagnitude: Boolean){
+            if(orderByMagnitude) sharedPreferences.edit().putBoolean("byMagnitudeFilter",true).apply()
+            else sharedPreferences.edit().putBoolean("byMagnitudeFilter",false).apply()
+    }
+
+    fun getFilterSP(): Boolean{
+        return sharedPreferences.getBoolean("byMagnitudeFilter",false)
+    }
 
 }

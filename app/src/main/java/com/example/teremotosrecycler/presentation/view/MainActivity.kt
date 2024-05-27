@@ -51,6 +51,13 @@ class MainActivity : AppCompatActivity() {
 
         })
 
+        val isByOrderSP = viewModel.getFilterSP()
+        if(isByOrderSP)
+            viewModel.setOrderListFilter(true)
+        else
+            viewModel.setOrderListFilter(false)
+
+
         val adaptador = TerremotoAdapter()
         binding.rclview.adapter = adaptador
 
@@ -81,10 +88,12 @@ class MainActivity : AppCompatActivity() {
         return when(itemID){
             R.id.menu_sort_magnitude -> {
                 viewModel.setOrderListFilter(true)
+                viewModel.setFilterSharedPreferences(true)
                 true
             }//Sort by magnitude
             R.id.menu_sort_time -> {
                 viewModel.setOrderListFilter(false)
+                viewModel.setFilterSharedPreferences(false)
                 true
             } // Sort by time
             else -> super.onOptionsItemSelected(item)

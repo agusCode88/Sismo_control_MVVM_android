@@ -22,10 +22,7 @@ class MainRepository(private val terremotoDao: TerremotoDAO): TerremotoRepositor
            // Guarda siempre en base de datos , luego trae de DB según el filtro
             if(terremotosList.isNotEmpty()){
                 saveTerremotosDB(terremotosList)
-                if(orderByMagnitude)
-                    terremotosList = getOrderByMagnitudeDB()
-                else
-                    terremotosList= getTerremotosDB()
+                return@withContext if (orderByMagnitude) getOrderByMagnitudeDB() else getTerremotosDB()
             }
             // Devuelve una lista vacía para validación
             else {

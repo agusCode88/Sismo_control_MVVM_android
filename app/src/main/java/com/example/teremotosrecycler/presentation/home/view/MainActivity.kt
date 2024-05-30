@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.teremotosrecycler.R
 import com.example.teremotosrecycler.data.local.TerremotoDatabase
 import com.example.teremotosrecycler.data.network.TerremotoApiResponseStatus
+import com.example.teremotosrecycler.data.network.worker.WorkerUtil
 import com.example.teremotosrecycler.data.repository.MainRepository
 import com.example.teremotosrecycler.databinding.ActivityMainBinding
 import com.example.teremotosrecycler.domain.TerremotosUseCase
@@ -39,6 +40,8 @@ class MainActivity : AppCompatActivity() {
 
         // Pass the use case to the ViewModelFactory
         val viewModelFactory = MainViewModelFactory(application, getTerremotosUseCase)
+
+        WorkerUtil.scheduleSync(this)
 
         viewModel = ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
 

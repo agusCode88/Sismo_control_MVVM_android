@@ -42,6 +42,8 @@ android {
 
 dependencies {
 
+    val work_version = "2.9.0"
+
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     //LiveData
@@ -52,12 +54,13 @@ dependencies {
     implementation(libs.moshi)
     //Moshi Converter
     implementation (libs.converter.moshi)
-
+    //Room
     implementation (libs.androidx.room.runtime)
-
     implementation (libs.androidx.room.ktx)
-
     ksp(libs.androidx.room.compiler.v250)
+
+    // WorkManager
+    implementation(libs.androidx.work.runtime.ktx)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

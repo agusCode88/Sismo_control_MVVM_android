@@ -38,9 +38,7 @@ class MainViewModel(
 
 
     init{
-        _orderListFilter.value = false
-        fetchTerremotos(false)
-
+         getTerremotosBD()
     }
 
     private fun fetchTerremotos(orderByMagnitude: Boolean){
@@ -56,12 +54,14 @@ class MainViewModel(
                     saveAllTerremotos(terremotos)
                 }else{
                     _terremotoList.value = getTerremotosUseCase.getTerremotosFromDatabase()
+                    _statusApi.value = TerremotoApiResponseStatus.DONE
                 }
 
             }catch (e: UnknownHostException){
                 Log.e("MainViewModel", "Not Network connection")
                 _terremotoList.value = getTerremotosUseCase.getTerremotosFromDatabase()
                 _statusApi.value = TerremotoApiResponseStatus.NOT_INTERNET_CONNECTION_ERROR
+                _statusApi.value = TerremotoApiResponseStatus.DONE
             }
 
         }
@@ -69,6 +69,16 @@ class MainViewModel(
 
     suspend fun saveAllTerremotos(listTerremotosApi: MutableList<Terremoto>){
         getTerremotosUseCase.saveTerremotos(listTerremotosApi)
+    }
+
+    fun getTerremotosBD(){
+        viewModelScope.launch {
+            _terremotoList.value = getTerremotosUseCase.getTerremotosFromDatabase()
+            if(_terremotoList.value!!.isEmpty()){
+                _orderListFilter.value = false
+                fetchTerremotos(false)
+            }
+        }
     }
 
     fun setOrderListFilter(orderByMagnitude: Boolean) {
